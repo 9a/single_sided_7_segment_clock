@@ -6,7 +6,7 @@ BOM (alternatives are also OK):
 - 29x 150080RS75000
 - 8x 10 Ohm 0805 (or 0603)
 
-See schematic/placement picture for assembly. The other through holes need to be connected via jumper wires.
+See schematic/placement picture for assembly. The through holes other than for the 5 pin connector need to be connected via jumper wires.
 
 It is designed to be connected to a USB-C ESP8266 D1-mini with a one to one connection via jumper wires to the pins 5V GND D4 D3 D2. Since the pins expose the control pins of the shift registers any microcontroller can be adapted.
 
