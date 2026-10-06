@@ -1,0 +1,83 @@
+esphome:
+  name: cnc-clock
+  friendly_name: cnc_clock
+
+  includes:
+    - cnc_display.h
+
+  on_boot:
+    priority: -100
+    then:
+      - lambda: |-
+          cnc_display_setup();
+
+esp8266:
+  board: d1_mini
+
+logger:
+
+api:
+  encryption:
+    key: !secret cnc_clock__encryption_key
+
+ota:
+  - platform: esphome
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  ap:
+    ssid: "ESP Clock Fallback"
+    password: "12345678"
+
+captive_portal:
+
+time:
+  - platform: homeassistant
+    id: ha_time
+    timezone: Europe/Berlin
+    update_interval: 60s # Change from default 15min to what you need
+
+  - platform: sntp
+    id: sntp_time
+    timezone: Europe/Berlin
+    
+number:
+  - platform: template
+    name: "Display Brightness"
+    id: display_brightness
+    optimistic: true
+    restore_value: true
+
+    min_value: 0
+    max_value: 100
+    step: 1
+    initial_value: 100
+
+    set_action:
+      - lambda: |-
+          cnc_display_set_brightness((uint8_t)x);
+
+interval:
+  # This only updates the clock data.
+  # The display itself is NOT driven by this interval.
+  - interval: 100ms
+    then:
+      - lambda: |-
+          auto now = id(sntp_time).now();
+
+          if (!now.is_valid()) {
+            cnc_display_set_digits(
+              9, 7, 6, 5, false
+            );
+            return;
+          }
+
+          cnc_display_set_digits(
+            now.hour / 10,
+            now.hour % 10,
+            now.minute / 10,
+            now.minute % 10,
+            ((now.second & 1) == 0)
+          );
