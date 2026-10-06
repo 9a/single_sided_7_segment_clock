@@ -1,4 +1,4 @@
-# Single Sided 7 segment clock
+# Single Sided 7 segment clock PCB (optimized for use with ESP D1 Mini/ESP-home)
 A pcb design for a 7 segment clock for single sided milled pcbs. Designed with KiCad 10. 
 
 BOM (alternatives are also OK):
